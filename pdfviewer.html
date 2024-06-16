@@ -1,71 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PDF Viewer</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
-    <style>
-        #pdf-viewer {
-            width: 100%;
-            height: 100vh;
-            overflow: auto;
-        }
-        canvas {
-            display: block;
-            margin: 0 auto;
-        }
-        #loading-info {
-            text-align: center;
-            margin-top: 20px;
-        }
-        #error-info {
-            text-align: center;
-            margin-top: 20px;
-            color: red;
-        }
-    </style>
+    <title>Open PDF</title>
 </head>
 <body>
-    <h1 style="text-align: center;">钻井大师</h1>
-    <div id="loading-info">正在加载...</div>
-    <div id="error-info"></div>
-    <div id="pdf-viewer"></div>
-    <script>
-        var url = decodeURIComponent(location.search.split('url=')[1]);
-        var pdfjsLib = window['pdfjs-dist/build/pdf'];
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
-
-        var loadingTask = pdfjsLib.getDocument(url);
-        loadingTask.onProgress = function (progressData) {
-            var percent = Math.round(progressData.loaded / progressData.total * 100);
-            document.getElementById('loading-info').innerText = '加载进度：' + percent + '%';
-        };
-
-        loadingTask.promise.then(function(pdf) {
-            var numPages = pdf.numPages;
-            document.getElementById('loading-info').style.display = 'none';
-            document.getElementById('pdf-viewer').style.display = 'block';
-            document.getElementById('pdf-viewer').innerHTML = '加载完成，共 ' + numPages + ' 页。';
-            pdf.getPage(1).then(function(page) {
-                var scale = 1.5;
-                var viewport = page.getViewport({ scale: scale });
-
-                var canvas = document.createElement('canvas');
-                var context = canvas.getContext('2d');
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-
-                document.getElementById('pdf-viewer').appendChild(canvas);
-
-                var renderContext = {
-                    canvasContext: context,
-                    viewport: viewport
-                };
-                page.render(renderContext);
-            });
-        }).catch(function (reason) {
-            document.getElementById('loading-info').style.display = 'none';
-            document.getElementById('error-info').innerText = '加载错误：' + reason.message;
-        });
-    </script>
+    <h1>点击下方链接在浏览器中打开 PDF 文件</h1>
+    <a href="https://7a75-zuanjingdashi-7gqju8ui45007343-1304616351.tcb.qcloud.la/ZJDS/ZJDSTICKET/undefined/蒋学伍2024-06-17中国-北京-尼日利亚-哈克特0.900875825959578.pdf" target="_blank">Open PDF</a>
 </body>
 </html>
