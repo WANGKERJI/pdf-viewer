@@ -13,12 +13,23 @@
             display: block;
             margin: 0 auto;
         }
+        #loading-info {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #error-info {
+            text-align: center;
+            margin-top: 20px;
+            color: red;
+        }
     </style>
 </head>
 <body>
-    <h1 style="text-align: center;">钻井大师</h1>
+    <h1 style="text-align: center;">钻井大师第二版</h1>
+    <div id="loading-info">正在加载...</div>
+    <div id="error-info"></div>
     <div id="pdf-viewer"></div>
-    <script>111
+    <script>
         var url = decodeURIComponent(location.search.split('url=')[1]);
 
         var pdfjsLib = window['pdfjs-dist/build/pdf'];
@@ -26,6 +37,8 @@
 
         var loadingTask = pdfjsLib.getDocument(url);
         loadingTask.promise.then(function(pdf) {
+            var numPages = pdf.numPages;
+            document.getElementById('loading-info').innerText = '加载完成，共 ' + numPages + ' 页。';
             pdf.getPage(1).then(function(page) {
                 var scale = 1.5;
                 var viewport = page.getViewport({ scale: scale });
@@ -41,11 +54,4 @@
                     canvasContext: context,
                     viewport: viewport
                 };
-                page.render(renderContext);
-            });
-        }).catch(function (reason) {
-            console.error(reason);
-        });
-    </script>
-</body>
-</html>
+                page
