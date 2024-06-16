@@ -25,20 +25,26 @@
     </style>
 </head>
 <body>
-    <h1 style="text-align: center;">钻井大师第二版</h1>
+    <h1 style="text-align: center;">钻井大师</h1>
     <div id="loading-info">正在加载...</div>
     <div id="error-info"></div>
     <div id="pdf-viewer"></div>
     <script>
         var url = decodeURIComponent(location.search.split('url=')[1]);
-
         var pdfjsLib = window['pdfjs-dist/build/pdf'];
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
 
         var loadingTask = pdfjsLib.getDocument(url);
+        loadingTask.onProgress = function (progressData) {
+            var percent = Math.round(progressData.loaded / progressData.total * 100);
+            document.getElementById('loading-info').innerText = '加载进度：' + percent + '%';
+        };
+
         loadingTask.promise.then(function(pdf) {
             var numPages = pdf.numPages;
-            document.getElementById('loading-info').innerText = '加载完成，共 ' + numPages + ' 页。';
+            document.getElementById('loading-info').style.display = 'none';
+            document.getElementById('pdf-viewer').style.display = 'block';
+            document.getElementById('pdf-viewer').innerHTML = '加载完成，共 ' + numPages + ' 页。';
             pdf.getPage(1).then(function(page) {
                 var scale = 1.5;
                 var viewport = page.getViewport({ scale: scale });
@@ -54,4 +60,12 @@
                     canvasContext: context,
                     viewport: viewport
                 };
-                page
+                page.render(renderContext);
+            });
+        }).catch(function (reason) {
+            document.getElementById('loading-info').style.display = 'none';
+            document.getElementById('error-info').innerText = '加载错误：' + reason.message;
+        });
+    </script>
+</body>
+</html>
